@@ -1,0 +1,49 @@
+Los distintos SET fueron tomados de los SET de la literatura.
+
+El SET0 es obligatorio para tecnicas completas (dado que son los SET mas peque~os). De la misma manera, el SET1 es obligatorio para las demas tecnicas. Los SET2 y SET3, estan para ayudar a realizar un mejor analisis de los resultados y, aun cuando no son obligatorios, se recomienda su uso en donde se pueda.
+
+Para las tecnicas completas que deseen probar con los demas set, ademas del obligatorio, se recomienda la utilizacion de instrucciones de interrupcion de codigo, para la obtencion de resultados de manera mas sencilla, dado los altos tiempos de ejecucion que tendran.
+
+A continuacion, se incluye la descripcion del formato de los archivos, incluido en el archivo de instancias originales (explicado en la diapo del OPHS, pero incluido igual). Cabe destacar que el valor denominado 'Tmax', no sera a~adido al analisis requerido (dadas las restricciones generadas por los 'Td' que lo sustituyen).
+
+
+
+
+
+***********************
+* OPHS test instances *
+***********************
+
+The first line contains the following data: 
+
+	N H D
+
+Where
+	N 	= number of vertices + 2
+	H	= number of extra hotels (total number of hotels excluding initial and final ones) 
+	D	= number of trips
+
+The second line contains:
+ 
+	Tmax	= total tour length
+
+The third line contains:
+
+	Td	= trip length for each trip d
+
+The remaining lines contain data about location and score:
+
+	x y Si
+
+Where
+	x	= x coordinate 
+	y	= y coordinate
+	Si	= score
+
+	the first line is the starting hotel
+	the second line is the ending hotel
+	the next "H" lines are the extra hotels
+	the remaining lines (N-2) are the vertices
+	
+* REMARKS *
+	- The Euclidian distance is used.
