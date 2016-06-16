@@ -16,9 +16,9 @@ void Helper::LeerInstancia(string path,int &H,int &N,int &D,vector<int> &S,vecto
   
   read >> total;
   
-  T.resize(D);
+  T.resize(D+1);
   
-  for(int d = 0; d < D; d++){
+  for(int d = 1; d <= D; d++){
     read >> T[d];
   }
   
