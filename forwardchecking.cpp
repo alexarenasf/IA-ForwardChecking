@@ -1,7 +1,5 @@
 using namespace std;
-#include <algorithm>
 #include "forwardchecking.h"
-
 
 ForwardChecking::ForwardChecking(int hoteles, int pois, int dias, vector<int> scores, vector<vector<double> > dist, vector<double> maxdist){
   this->H = hoteles;
@@ -15,15 +13,41 @@ ForwardChecking::ForwardChecking(int hoteles, int pois, int dias, vector<int> sc
 }
 
 void ForwardChecking::InitVariables(){
-  this->X.resize(this->D + 1);
-  this->Dom_iteracion_X.resize(this->D + 1);
+  this->X.resize(this->H + this->N + 1);
   this->Dom_X.resize(this->H + this->N + 1);
-
-  for(int l = 0; l <= this->H + this->N; l++){
-    this->Dom_X[l] = l;
+  
+  for(int i = 0; i <= this->H + this->N; i++){
+    this->X[i].resize(this->H + this->N + 1);
+    this->Dom_X[i].resize(this->H + this->N + 1);
+    
+    for(int j = 0; j <= this->H + this->N; j++){
+      this->X[i][j].resize(this->D + 1);
+      this->Dom_X[i][j].resize(this->D + 1);
+      
+      for(int k = 1; k <= this->D; k++){
+        this->Dom_X[i][j][k].resize(2);
+        
+        this->Dom_X[i][j][k][0] = 1;
+        this->Dom_X[i][j][k][1] = 0;
+      }
+    }
   }
   
-  this->CheckForward(1,0);
+  this->u.resize(this->H + this->N + 1);
+  this->Dom_u.resize(this->H + this->N + 1);
+  this->ImDom_u.resize(this->H + this->N + 1);
+   
+  for(int i = this->H+1; i <= this->H + this->N; i++){
+    this->ImDom_u[i].resize(this->H + this->N + 1);
+    
+    for(int n = 1; n <= this->N; n++){
+      this->Dom_u[i].push_back(n);
+    }
+  } 
+  
+  this->Conf_u.resize(this->H + this->N + 1);
+  
+  
 }
 
 vector<int> ForwardChecking::Hoteles(){
@@ -79,92 +103,31 @@ void ForwardChecking::MostrarInstancia(){
   cout << endl;
 }
 
-void ForwardChecking::MostrarDominio(int d, int i){
-  cout << "Dom_X(" << d << ", " << i << ") = {";
-  for(int l = 0; l < this->Dom_iteracion_X[d][i].size(); l++){
-    if(l>0)
-      cout << ", ";
-    cout << this->Dom_iteracion_X[d][i][l];
+void ForwardChecking::MostrarDia(int k){
+  for(int j = 0; j<= this->H + this->N; j++){
+    cout << "-----";
   }
-  cout << "}" << endl << endl;
-}
-
-void ForwardChecking::CrearDominio(int d, int i){
-  if(this->Dom_iteracion_X[d].size() < i+1)
-    this->Dom_iteracion_X[d].resize(i+1);
-  
-  this->Dom_iteracion_X[d][i].resize(this->Dom_X.size());
-  
-  for(int l = 0; l < this->Dom_X.size(); l++)
-    this->Dom_iteracion_X[d][i][l] = this->Dom_X[l];  
-}
-
-void ForwardChecking::FiltrarDominio(int d, int i){
-  vector<int> pois = this->POIs();
-  vector<int> hoteles = this->Hoteles();
-  
-  // El punto de partida el día 1 es el hotel 0 (l = 0)
-  if(i == 0 && d == 1){
-    for(int l = 1; l <= this->H + this->N; l++)
-    this->EliminarDominio(d,i,l);
+  cout << "-" << endl;
+  cout << "| i\\j" << " | ";
+  for(int j = 0; j<= this->H + this->N; j++){
+    cout << j << " | ";
   }
-  // El punto de partida de todo día es un hotel
-  else if(i == 0){
-    for(int p = 0; p < pois.size(); p++)
-      this->EliminarDominio(d,i,pois[p]);
+  cout << endl;
+  for(int j = 0; j<= this->H + this->N; j++){
+    cout << "-----";
   }
+  cout << "-" << endl;
   
- 
-}
-
-void ForwardChecking::EliminarDominio(int d, int i, int l){
-  this->Dom_iteracion_X[d][i].erase(remove(this->Dom_iteracion_X[d][i].begin(), this->Dom_iteracion_X[d][i].end(), l), this->Dom_iteracion_X[d][i].end());
-}
-
-bool ForwardChecking::EsPOI(int l){
-  vector<int> pois = this->POIs();
-  return find(pois.begin(), pois.end(), l) != pois.end();
-}
-
-bool ForwardChecking::Instanciar(int d, int i){   
-  if(this->Dom_iteracion_X[d].empty())
-    return false;
-  
-  this->MostrarDominio(d,i);
-  cout << "Instanciando d=" << d << ", i=" << i << endl;
-
-  this->X[d].resize(i+1);
-  this->X[d][i] = this->Dom_iteracion_X[d][i].front();
-  this->Dom_iteracion_X[d][i].erase(this->Dom_iteracion_X[d][i].begin());
-  
-  cout << "X[" << d << "][" << i << "] = " <<  this->X[d][i] << endl << endl;
-  
-  return true;
-}
-  
-  
-int ForwardChecking::CheckForward(int d, int i){
-  vector<int> pois = this->POIs();
-  vector<int> hoteles = this->Hoteles();
-  
-  // Clonar Dominio Base para la iteración
-  this->CrearDominio(d,i);
-  
-  // Filtrar Dominio segun restricciones
-  // El punto de partida el día 1 es el hotel 0 (l = 0)
-  if(i == 0 && d == 1){
-    for(int l = 1; l <= this->H + this->N; l++)
-    this->EliminarDominio(d,i,l);
+  for(int i = 0; i<= this->H + this->N; i++){
+    cout << "|  " << i << "  | ";
+    for(int j = 0; j<= this->H + this->N; j++){
+      cout << this->X[i][j][k] << " | ";
+    }
+    cout << endl;
+    for(int j = 0; j<= this->H + this->N; j++){
+      cout << "-----";
+    }
+    cout << "-" << endl;
   }
-  // El punto de partida de todo día es un hotel
-  else if(i == 0){
-    for(int p = 0; p < pois.size(); p++)
-      this->EliminarDominio(d,i,pois[p]);
-  }
-  
-  return i;
 }
 
-int ForwardChecking::CBJ(int d, int i){
-
-}

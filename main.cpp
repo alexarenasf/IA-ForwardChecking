@@ -13,39 +13,32 @@ int main(){
   vector<vector<double> > t;
   vector<double> T;
   
-  bool consistente;
-  int iteracion = 0;
-  int dia = 1;
+  bool puedoInstanciar = true;
 
   helper.LeerInstancia(path, H, N, D, S, t, T);  
   ForwardChecking forwardchecking(H, N, D, S, t, T);
-  //forwardchecking.MostrarInstancia();
-  
-  
-  consistente = true;
-  iteracion = 0;
-  
-  for(int i = 0; i < 5; i++){
-    cout << "Iteración " << iteracion << endl << "============" << endl;
-    consistente = forwardchecking.Instanciar(dia, iteracion);
-    if(consistente){
-      iteracion = forwardchecking.CheckForward(dia, iteracion + 1);
+   
+  int primeraVariable = H + 1;
+  int ultimaVariable = H + N;
+  int i = primeraVariable;
+  while(true){
+    //cout << i << endl;   
+    puedoInstanciar = forwardchecking.Instanciar(i);
+    
+    if(i == ultimaVariable && puedoInstanciar){
+      cout << "Solución candidata ";
+      forwardchecking.Instancia_u();
+    }else if(puedoInstanciar){
+      // Revisar dominios de variables futuras y avanzar
+      i = forwardchecking.CheckForward(i);
     }else{
-      iteracion = forwardchecking.CBJ(dia, iteracion);
+      //volver a variable i
+      i = forwardchecking.CBJ(i);
     }
+    
+    if(i == primeraVariable && forwardchecking.DominioVacio(primeraVariable))
+      break;
   }
-  
-  
-  // for(int i = 0; i <= H + N + 1; i++){
-    // for(int j = 0; j <= H + N + 1; j++){
-      // for(int k = 0; k < D; k++){
-        // forwardchecking.Instanciar(i,j,k);
-      // }
-    // }
-  // }
-      
-  
-  
   
   return 0;
 }
