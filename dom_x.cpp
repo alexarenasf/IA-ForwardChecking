@@ -28,3 +28,12 @@ int ForwardChecking::DominioPop(int i, int j, int k){
   this->Dom_X[i][j][k].erase(this->Dom_X[i][j][k].begin());
   return primero;
 }
+
+void ForwardChecking::DominioFiltrar_X(){
+// Origen en el día k = 1 solo puede ser hotel 0
+  for(int i = 1; i <= this->H; i++){
+    for(int j = 0; j <= this->H + this->N + 1; j++){
+      this->DominioEliminar(i,j,1,1);
+    }
+  }
+}

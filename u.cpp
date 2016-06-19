@@ -3,6 +3,9 @@ using namespace std;
 
 void ForwardChecking::Instancia_u(){
   cout << "u = [ ";
+  for(int i = 0; i <= this->H; i++)
+    cout << "- | ";
+  
   for(int i = this->H + 1; i <= this->H + this->N; i++){
     if(i>this->H + 1)
       cout << " | ";

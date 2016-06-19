@@ -24,7 +24,6 @@ class ForwardChecking{
 //Conjuntos de Conflictos 
     vector<vector<int> > Conf_u;
   public:
-    
     ForwardChecking(int hoteles, int pois, int dias, vector<int> scores, vector<vector<double> > dist, vector<double> maxdist);
     void InitVariables();
     vector<int> Hoteles();
@@ -34,6 +33,7 @@ class ForwardChecking{
     void MostrarDia(int k);
     
 //Operaciones para Dominio de X[i][j][k] = l
+    void DominioFiltrar_X();
     void Dominio(int i, int j, int k);
     bool DominioVacio(int i, int j, int k);
     void DominioEliminar(int i, int j, int k, int l);
@@ -42,8 +42,8 @@ class ForwardChecking{
     
 //Operaciones para Variable X[i][j][k]
     bool Instanciar(int i, int j, int k);
-    int CheckForward(int i, int j, int k);
-    int CBJ(int i, int j, int k);
+    void CheckForward(int &i, int &j, int &k);
+    void CBJ(int &i, int &j, int &k);
     
 //Operaciones para Dominio de u[i] = n
     void Dominio(int i);
