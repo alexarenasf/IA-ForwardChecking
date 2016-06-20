@@ -38,6 +38,11 @@ void ForwardChecking::InitVariables(){
     }
   }
   
+  this->ImDom_X.resize(this->D*(this->H + this->N + 1)*(this->H + this->N + 1));
+  for(int t = 0; t < this->D*(this->H + this->N + 1)*(this->H + this->N + 1); t++){
+    this->ImDom_X[t].resize(this->D*(this->H + this->N + 1)*(this->H + this->N + 1));
+  }
+  
   this->u.resize(this->H + this->N + 1);
   this->Dom_u.resize(this->H + this->N + 1);
   this->ImDom_u.resize(this->H + this->N + 1);
@@ -51,6 +56,7 @@ void ForwardChecking::InitVariables(){
   } 
   
   this->Conf_u.resize(this->H + this->N + 1);  
+  this->Conf_X.resize(this->D*(this->H + this->N + 1)*(this->H + this->N + 1));
 }
 
 vector<int> ForwardChecking::Hoteles(){
@@ -106,34 +112,7 @@ void ForwardChecking::MostrarInstancia(){
   cout << endl;
 }
 
-void ForwardChecking::MostrarDia(int k){
-  for(int j = 0; j<= this->H + this->N; j++){
-    cout << "-----";
-  }
-  cout << "-" << endl;
-  cout << "| i\\j" << " | ";
-  for(int j = 0; j<= this->H + this->N; j++){
-    cout << j << " | ";
-  }
-  cout << endl;
-  for(int j = 0; j<= this->H + this->N; j++){
-    cout << "-----";
-  }
-  cout << "-" << endl;
-  
-  for(int i = 0; i<= this->H + this->N; i++){
-    cout << "|  " << i << "  | ";
-    for(int j = 0; j<= this->H + this->N; j++){
-      if(this->X[i][j][k] == 1)
-        cout << this->X[i][j][k] << " | ";
-      else
-        cout << "- | ";
-    }
-    cout << endl;
-    for(int j = 0; j<= this->H + this->N; j++){
-      cout << "-----";
-    }
-    cout << "-" << endl;
-  }
-}
+
+
+
 

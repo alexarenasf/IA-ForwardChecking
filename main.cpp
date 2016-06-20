@@ -59,24 +59,28 @@ if(rehacer_u){
   puedoInstanciar = true;     
   forwardchecking.IteradorCrear(); 
   
-  //~ forwardchecking.DominioEliminar(0,0,1,1);
-  //~ forwardchecking.DominioEliminar(0,1,1,1);
-  //~ forwardchecking.DominioEliminar(0,2,1,1);
+  forwardchecking.DominioEliminar(0,0,1,1);
+  forwardchecking.DominioEliminar(0,1,1,1);
+  forwardchecking.DominioEliminar(0,2,1,1);
   forwardchecking.DominioFiltrar_X();
   
   while(true){    
     forwardchecking.IteradorSet_ijk(i,j,k);
-    
+      
     puedoInstanciar = forwardchecking.Instanciar(i,j,k);
     
     if(forwardchecking.IteradorUltimo() && puedoInstanciar){
-      cout << "Solución candidata " << endl;
-      for(int d = 1; d <= D; d++)
-        forwardchecking.MostrarDia(d);
-      break;
+      //cout << "Solución candidata " << endl;
+      //forwardchecking.Instancia_X();
+      //for(int d = 1; d <= D; d++)
+        //forwardchecking.MostrarDia(d);
+        //cin.get();
+      
     }else if(puedoInstanciar){
-// Revisar dominios de variables futuras y avanzar a la variable i
+// Revisar dominios de variables futuras y avanzar a la variable ijk
       forwardchecking.CheckForward(i,j,k);
+      forwardchecking.Dominio_ijk();
+      cin.get();
     }else{
 //volver a variable i
       forwardchecking.CBJ(i,j,k);
@@ -84,6 +88,7 @@ if(rehacer_u){
     
     if(forwardchecking.IteradorPrimero() && forwardchecking.DominioVacio(i,j,k))
       break;
+    
   }
   
   

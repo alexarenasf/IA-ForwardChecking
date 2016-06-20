@@ -11,6 +11,79 @@ void ForwardChecking::Dominio(int i, int j, int k){
   cout << "}" << endl;
 }
 
+void ForwardChecking::Dominio_ijk(){
+  for(int k=1; k<=this->D; k++){
+    for(int j = 0; j<= this->H + this->N; j++){
+      cout << "-------";
+    }
+    cout << "" << endl;
+    cout << "| i\\j" << " | ";
+    for(int j = 0; j<= this->H + this->N; j++){
+      cout << " " << j << "  | ";
+    }
+    cout << endl;
+    for(int j = 0; j<= this->H + this->N; j++){
+      cout << "-------";
+    }
+    cout << "" << endl;
+    
+    for(int i = 0; i<= this->H + this->N; i++){
+      cout << "|  " << i << "  | ";
+      for(int j = 0; j<= this->H + this->N; j++){
+        for(unsigned int n = 0; n < this->Dom_X[i][j][k].size(); n++){
+          cout << this->Dom_X[i][j][k][n] << " ";
+        }
+        if(this->Dom_X[i][j][k].size() == 1)
+          cout << "- ";
+        if(this->Dom_X[i][j][k].size() == 0)
+          cout << "- - ";
+        cout << "| ";
+      }
+      
+      cout << endl;
+      for(int j = 0; j<= this->H + this->N; j++){
+        cout << "-------";
+      }
+      cout << "" << endl;
+    }
+  }
+}
+
+
+void ForwardChecking::ImagenDominioCrear_ijk(int ttt, int ijk){
+  int i = this->Ord_ijk[ijk][0];
+  int j = this->Ord_ijk[ijk][1];
+  int k = this->Ord_ijk[ijk][2];
+  
+  //cout << "Creando Imagen de " << i << j << k << endl; 
+  
+  this->ImDom_X[ttt][ijk].clear();
+  for(unsigned int n = 0; n < this->Dom_X[i][j][k].size(); n++)
+    this->ImDom_X[ttt][ijk].push_back(this->Dom_X[i][j][k][n]);
+}
+
+void ForwardChecking::ImagenDominioRestaurar_ijk(int ttt){
+  for(unsigned int ijk = 0; ijk < this->Ord_ijk.size(); ijk++){
+    int i = this->Ord_ijk[ijk][0];
+    int j = this->Ord_ijk[ijk][1];
+    int k = this->Ord_ijk[ijk][2];
+    
+    //Restaurar imagenes en t
+    this->Dom_X[i][j][k].clear();
+    this->Dom_X[i][j][k].resize(this->ImDom_X[ttt][ijk].size());
+    for(unsigned int n = 0; n < this->ImDom_X[ttt][ijk].size(); n++)
+      this->Dom_X[i][j][k][n] = this->ImDom_X[ttt][ijk][n];
+    
+    sort(this->Dom_X[i][j][k].begin(), this->Dom_X[i][j][k].end());
+    reverse(this->Dom_X[i][j][k].begin(), this->Dom_X[i][j][k].end());
+    
+    //Borrar imagenes posteriores a t
+    for(int tttttt = ttt; tttttt <= this->H + this->N; tttttt++){
+      this->ImDom_X[tttttt][ijk].clear();
+    }
+  }
+}
+
 bool ForwardChecking::DominioVacio(int i, int j, int k){
   return this->Dom_X[i][j][k].empty();
 }
