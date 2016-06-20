@@ -9,7 +9,7 @@ void ForwardChecking::ConflictoAgregar(int ii, int i){
 }
 
 void ForwardChecking::ConflictoComer(int i, int ii){
-  for(int j = 0; j <= this->Conf_u[ii].size();j++){
+  for(unsigned int j = 0; j <= this->Conf_u[ii].size();j++){
     this->ConflictoAgregar(this->Conf_u[ii][j],i);
   }
 }

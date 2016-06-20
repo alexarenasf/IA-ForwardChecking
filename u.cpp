@@ -14,6 +14,28 @@ void ForwardChecking::Instancia_u(){
   cout << " ]" << endl;
 }
 
+string ForwardChecking::Ruta_u(){
+  vector<int> ruta;
+  stringstream ss;
+  
+  ruta.resize(this->u.size()-(this->H+1));
+  for(int i = this->H+1; i <= this->H + this->N; i++){
+    ruta[this->u[i]-1] = i;
+  }
+  
+  for(unsigned int i = 0; i < ruta.size(); i++){
+    if(i>0){
+      cout << "->";
+      ss << " ";
+    }
+    cout << ruta[i];
+    ss << ruta[i];
+  }
+  cout << endl;
+  
+  return ss.str();
+}
+
 bool ForwardChecking::Instanciar(int i){   
   if(this->DominioVacio(i))
     return false;

@@ -3,7 +3,7 @@ using namespace std;
 #include "forwardchecking.h"
 
 int main(){
-  string path = "./instances/SET0/5-20-1-2.ophs";
+  string path = "./instances/SET0/6-20-1-2.ophs";
   Helper helper;
 
   int H;
@@ -13,13 +13,19 @@ int main(){
   vector<vector<double> > t;
   vector<double> T;
   
-  helper.LeerInstancia(path, H, N, D, S, t, T);  
+  bool rehacer_u = false;
+  
+  if(rehacer_u)
+    helper.ReiniciarArchivos();
+  
+  helper.LeerInstancia(path, H, N, D, S, t, T);    
   ForwardChecking forwardchecking(H, N, D, S, t, T);
   
   int i,j,k;
   bool puedoInstanciar;
   
 // Variable u[i]
+if(rehacer_u){
   puedoInstanciar = true;   
   int primeraVariable = H + 1;
   int ultimaVariable = H + N;
@@ -28,8 +34,9 @@ int main(){
     puedoInstanciar = forwardchecking.Instanciar(i);
     
     if(i == ultimaVariable && puedoInstanciar){
-      cout << "Solución candidata ";
-      forwardchecking.Instancia_u();
+      //forwardchecking.Instancia_u();
+      //cout << forwardchecking.Ruta_u();
+      helper.EscribirRuta(forwardchecking.Ruta_u());
     }else if(puedoInstanciar){
 // Revisar dominios de variables futuras y avanzar a la variable i
       i = forwardchecking.CheckForward(i);
@@ -41,31 +48,32 @@ int main(){
     if(i == primeraVariable && forwardchecking.DominioVacio(i))
       break;
   }
+}
+
+  vector<vector<int> > rutas;
+  helper.LeerRutas(rutas,N);
+  forwardchecking.SetRutas(rutas);
+
   
 // Variable X[i][j][k]  
-  puedoInstanciar = true;   
-  int primeraVariable_i, primeraVariable_j, primeraVariable_k;
-  int ultimaVariable_i, ultimaVariable_j, ultimaVariable_k;
+  puedoInstanciar = true;     
+  forwardchecking.IteradorCrear(); 
   
-  primeraVariable_i = 0; // Origen: Hotel i = 0
-  primeraVariable_j = 0; // Destino: Hotel j = 1
-  primeraVariable_k = 1; // Día k = 1
+  //~ forwardchecking.DominioEliminar(0,0,1,1);
+  //~ forwardchecking.DominioEliminar(0,1,1,1);
+  //~ forwardchecking.DominioEliminar(0,2,1,1);
+  forwardchecking.DominioFiltrar_X();
   
-  ultimaVariable_i = H + N + 1; // Origen: POI i = H+N+1
-  ultimaVariable_j = H + N + 1; // Destino: POI j = H+N+1
-  ultimaVariable_k = D; // Día k = D
-  
-  i = primeraVariable_i;
-  j = primeraVariable_j;
-  k = primeraVariable_k;
-  
-  forwardchecking.DominioEliminar(0,0,1,1);
-  
-  while(true){
+  while(true){    
+    forwardchecking.IteradorSet_ijk(i,j,k);
+    
     puedoInstanciar = forwardchecking.Instanciar(i,j,k);
     
-    if((i == ultimaVariable_i && j == ultimaVariable_j && k == ultimaVariable_k) && puedoInstanciar){
-      cout << "Solución candidata ";
+    if(forwardchecking.IteradorUltimo() && puedoInstanciar){
+      cout << "Solución candidata " << endl;
+      for(int d = 1; d <= D; d++)
+        forwardchecking.MostrarDia(d);
+      break;
     }else if(puedoInstanciar){
 // Revisar dominios de variables futuras y avanzar a la variable i
       forwardchecking.CheckForward(i,j,k);
@@ -74,10 +82,7 @@ int main(){
       forwardchecking.CBJ(i,j,k);
     }
     
-    if((i == primeraVariable_i && j == primeraVariable_j && k == primeraVariable_k) && forwardchecking.DominioVacio(i,j,k))
-      break;
-    
-    if(k > ultimaVariable_k)
+    if(forwardchecking.IteradorPrimero() && forwardchecking.DominioVacio(i,j,k))
       break;
   }
   

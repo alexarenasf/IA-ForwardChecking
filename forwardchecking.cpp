@@ -12,6 +12,11 @@ ForwardChecking::ForwardChecking(int hoteles, int pois, int dias, vector<int> sc
   this->InitVariables(); 
 }
 
+void ForwardChecking::SetRutas(vector<vector<int> > rutas){
+  this->Ord_u = rutas;
+  this->iterador_u = 0;
+}
+
 void ForwardChecking::InitVariables(){
   this->X.resize(this->H + this->N + 1);
   this->Dom_X.resize(this->H + this->N + 1);
@@ -45,9 +50,7 @@ void ForwardChecking::InitVariables(){
     }
   } 
   
-  this->Conf_u.resize(this->H + this->N + 1);
-  
-  
+  this->Conf_u.resize(this->H + this->N + 1);  
 }
 
 vector<int> ForwardChecking::Hoteles(){
@@ -77,7 +80,7 @@ void ForwardChecking::MostrarInstancia(){
   
   cout << "Hoteles = {";
   vector<int> hoteles = this->Hoteles();
-  for(int h = 0; h < hoteles.size(); h++){
+  for(unsigned int h = 0; h < hoteles.size(); h++){
     if(h>0)
       cout << ", ";
     cout << hoteles[h];
@@ -86,7 +89,7 @@ void ForwardChecking::MostrarInstancia(){
   
   cout << "POIs = {";
   vector<int> pois = this->POIs();
-  for(int p = 0; p < pois.size(); p++){
+  for(unsigned int p = 0; p < pois.size(); p++){
     if(p>0)
       cout << ", ";
     cout << pois[p];
@@ -121,7 +124,10 @@ void ForwardChecking::MostrarDia(int k){
   for(int i = 0; i<= this->H + this->N; i++){
     cout << "|  " << i << "  | ";
     for(int j = 0; j<= this->H + this->N; j++){
-      cout << this->X[i][j][k] << " | ";
+      if(this->X[i][j][k] == 1)
+        cout << this->X[i][j][k] << " | ";
+      else
+        cout << "- | ";
     }
     cout << endl;
     for(int j = 0; j<= this->H + this->N; j++){

@@ -3,7 +3,7 @@ using namespace std;
 
 void ForwardChecking::Dominio(int i){
   cout << "Dom_u(" << i << ") = {";
-  for(int l = 0; l < this->Dom_u[i].size(); l++){
+  for(unsigned int l = 0; l < this->Dom_u[i].size(); l++){
     if(l>0)
       cout << ", ";
     cout << this->Dom_u[i][l];
@@ -14,7 +14,7 @@ void ForwardChecking::Dominio(int i){
 void ForwardChecking::ImagenDominioCrear(int t, int i){
   //cout << this->ImDom_u.size() << " - " << this->ImDom_u[t].size() << endl;
   
-  for(int n = 0; n < this->Dom_u[i].size(); n++)
+  for(unsigned int n = 0; n < this->Dom_u[i].size(); n++)
     this->ImDom_u[t][i].push_back(this->Dom_u[i][n]);
   
   //cout << this->ImDom_u[t][i].size() << endl;
@@ -25,7 +25,7 @@ void ForwardChecking::ImagenDominioRestaurar(int t){
     //Restaurar imagenes en t
     this->Dom_u[i].clear();
     this->Dom_u[i].resize(this->ImDom_u[t][i].size());
-    for(int n = 0; n < this->ImDom_u[t][i].size(); n++)
+    for(unsigned int n = 0; n < this->ImDom_u[t][i].size(); n++)
       this->Dom_u[i][n] = this->ImDom_u[t][i][n];
     
     //Borrar imagenes posteriores a t

@@ -3,6 +3,7 @@ using namespace std;
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 
 class ForwardChecking{
   private:
@@ -23,8 +24,14 @@ class ForwardChecking{
     vector<vector<vector<int> > > ImDom_u;
 //Conjuntos de Conflictos 
     vector<vector<int> > Conf_u;
+//Iteradores para Variables X[i][j][k]
+    vector<vector<int> > Ord_ijk;
+    vector<vector<int> > Ord_u;
+    unsigned int iterador_ijk;
+    unsigned int iterador_u;
   public:
     ForwardChecking(int hoteles, int pois, int dias, vector<int> scores, vector<vector<double> > dist, vector<double> maxdist);
+    void SetRutas(vector<vector<int> > rutas);
     void InitVariables();
     vector<int> Hoteles();
     vector<int> POIs();
@@ -39,12 +46,24 @@ class ForwardChecking{
     void DominioEliminar(int i, int j, int k, int l);
     int DominioPop(int i, int j, int k);
     bool DominioContiene(int i, int j, int k, int l);
+    void ImagenDominioCrear(int t_i, int t_j, int t_k, int i, int j, int k);
+    void ImagenDominioRestaurar(int t_i, int t_j, int t_k);
+
+//Operaciones para el Conjunto Conflicto de X[i][j][k], ii > i, jj > j, kk > k
+    void ConflictoAgregar(int ii, int jj, int kk, int i, int j, int k);
+    void ConflictoComer(int i, int j, int k, int ii, int jj, int kk);
     
 //Operaciones para Variable X[i][j][k]
+    void IteradorCrear();
+    void IteradorAvanzar(int &i, int &j, int &k);
+    void IteradorRetroceder(int &i, int &j, int &k);
+    void IteradorSet_ijk(int &i, int &j, int &k);
+    bool IteradorPrimero();
+    bool IteradorUltimo();
     bool Instanciar(int i, int j, int k);
     void CheckForward(int &i, int &j, int &k);
     void CBJ(int &i, int &j, int &k);
-    
+
 //Operaciones para Dominio de u[i] = n
     void Dominio(int i);
     bool DominioVacio(int i);
@@ -60,6 +79,7 @@ class ForwardChecking{
     
 //Operaciones para Variable u[i]
     void Instancia_u();
+    string Ruta_u();
     bool Instanciar(int i);
     int CheckForward(int i);
     int CBJ(int i);

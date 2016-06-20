@@ -46,12 +46,41 @@ void Helper::LeerInstancia(string path,int &H,int &N,int &D,vector<int> &S,vecto
     }
   }
   
+  read.close();
+  
+}
+
+void Helper::LeerRutas(vector<vector<int> > &Ord_u, int N){  
+  int r;
+  ifstream read("./tmp/rutas.tmp");
+  for(int i = 0; i < N; i++){
+    Ord_u.resize(N);
+    for(int j = 0; j < N; j++){
+      read >> r;
+      Ord_u[i].push_back(r);
+    }
+  }
+  read.close();
+}
+
+void Helper::ReiniciarArchivos(){
+  ofstream rutas;
+  rutas.open ("./tmp/rutas.tmp");
+  rutas.close();
+}
+
+void Helper::EscribirRuta(string s){
+  ofstream rutas;
+  rutas.open ("./tmp/rutas.tmp", ios_base::app);
+  rutas << s << endl;
+  rutas.close();
+}
+
+void Helper::EscribirSolucion(){
+
 }
 
 double Helper::DistanciaEuclidiana(pair<double,double> p1, pair<double,double> p2){
   return sqrt(pow(p2.first-p1.first,2)+pow(p2.second-p1.second,2));
 }
 
-void Helper::EscribirSolucion(){
-
-}
