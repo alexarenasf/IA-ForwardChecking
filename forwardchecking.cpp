@@ -58,8 +58,15 @@ void ForwardChecking::InitVariables(){
   this->Conf_u.resize(this->H + this->N + 1);  
   this->Conf_X.resize(this->D*(this->H + this->N + 1)*(this->H + this->N + 1));
   this->Conf_X_detalle.resize(this->D*(this->H + this->N + 1)*(this->H + this->N + 1));
-  for(int ijk = 0; ijk < (this->D*(this->H + this->N + 1)*(this->H + this->N + 1)); ijk++)
+  this->A_X.resize(this->D*(this->H + this->N + 1)*(this->H + this->N + 1));
+  
+  for(int ijk = 0; ijk < (this->D*(this->H + this->N + 1)*(this->H + this->N + 1)); ijk++){
     this->Conf_X_detalle[ijk].resize(this->D*(this->H + this->N + 1)*(this->H + this->N + 1));
+  
+    this->A_X[ijk] = 0.0;
+  }
+  
+  
   
 }
 

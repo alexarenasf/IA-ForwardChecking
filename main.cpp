@@ -3,7 +3,7 @@ using namespace std;
 #include "forwardchecking.h"
 
 int main(){
-  string path = "./instances/SET0/6-20-1-2.ophs";
+  string path = "./instances/SET0/6-10-1-2.ophs";
   Helper helper;
 
   int H;
@@ -56,60 +56,65 @@ if(rehacer_u){
 
   
 // Variable X[i][j][k]  
-  puedoInstanciar = true;     
-  forwardchecking.IteradorCrear(); 
-  
-  //~ forwardchecking.DominioEliminar(0,0,1,1);
-  //~ forwardchecking.DominioEliminar(0,1,1,1);
-  //~ forwardchecking.DominioEliminar(0,2,1,1);
-  forwardchecking.DominioFiltrar_X();
-  
-  //~ forwardchecking.Dominio_ijk();
-      //~ cin.get();
-  bool checkearDominio = false;
-  string sn;
-  
-  while(true){    
-    forwardchecking.IteradorSet_ijk(i,j,k);
-      
-    puedoInstanciar = forwardchecking.Instanciar(i,j,k);
+  while(!forwardchecking.NoHayMasRutas()){
+    puedoInstanciar = true;     
+    forwardchecking.IteradorCrear(); 
     
-    if(forwardchecking.IteradorUltimo() && puedoInstanciar){
-      //cout << "Solución candidata " << endl;
-      forwardchecking.Instancia_X();
-      //~ for(int d = 1; d <= D; d++)
-        //~ forwardchecking.MostrarDia(d);
-      //~ cin.get();
+    //~ forwardchecking.DominioEliminar(0,0,1,1);
+    //~ forwardchecking.DominioEliminar(0,1,1,1);
+    //~ forwardchecking.DominioEliminar(0,2,1,1);
+    forwardchecking.DominioFiltrar_X();
+    
+    //~ forwardchecking.Dominio_ijk();
+        //~ cin.get();
+    bool checkearDominio = false;
+    string sn;
+    
+    while(true){        
+      forwardchecking.IteradorSet_ijk(i,j,k);
+        
+      puedoInstanciar = forwardchecking.Instanciar(i,j,k);
       
-      //~ getline(cin, sn);
-      //~ if(sn == "s")
-        //~ checkearDominio = true;
-      //~ else
-        //~ checkearDominio = false;
-      
-    }else if(puedoInstanciar){
-// Revisar dominios de variables futuras y avanzar a la variable ijk
-      forwardchecking.CheckForward(i,j,k);
-      if(checkearDominio){
-        cout << "FC" << endl;
-        forwardchecking.Dominio_ijk();
-        getline(cin, sn);
+      if(forwardchecking.IteradorUltimo() && puedoInstanciar){
+        //cout << "Solución candidata " << endl;
+        forwardchecking.Instancia_X();
+        //~ for(int d = 1; d <= D; d++)
+          //~ forwardchecking.MostrarDia(d);
+        //~ cin.get();
+        
+        //~ getline(cin, sn);
+        //~ if(sn == "s")
+          //~ checkearDominio = true;
+        //~ else
+          //~ checkearDominio = false;
+        
+      }else if(puedoInstanciar){
+  // Revisar dominios de variables futuras y avanzar a la variable ijk
+        forwardchecking.CheckForward(i,j,k);
+        if(checkearDominio){
+          cout << "FC" << endl;
+          forwardchecking.Dominio_ijk();
+          getline(cin, sn);
+        }
+      }else{
+  //volver a variable i
+        forwardchecking.CBJ(i,j,k);
+        if(checkearDominio){
+          cout << "CBJ" << endl;
+          forwardchecking.Dominio_ijk();
+          getline(cin, sn);
+        }
       }
-    }else{
-//volver a variable i
-      forwardchecking.CBJ(i,j,k);
-      if(checkearDominio){
-        cout << "CBJ" << endl;
-        forwardchecking.Dominio_ijk();
-        getline(cin, sn);
+      
+      if(forwardchecking.IteradorPrimero() && forwardchecking.DominioVacio(i,j,k)){
+        //forwardchecking.Dominio_ijk();
+        break;
+        
       }
+      
     }
-    
-    if(forwardchecking.IteradorPrimero() && forwardchecking.DominioVacio(i,j,k)){
-      //forwardchecking.Dominio_ijk();
-      break;
-    }
-    
+    forwardchecking.SiguienteRuta();
+    forwardchecking.DominioReiniciar_ijk();
   }
   
   

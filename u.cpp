@@ -36,6 +36,15 @@ string ForwardChecking::Ruta_u(){
   return ss.str();
 }
 
+void ForwardChecking::SiguienteRuta(){
+  cout << this->iterador_u << endl;
+  this->iterador_u++;
+}
+
+bool ForwardChecking::NoHayMasRutas(){
+  return (this->iterador_u==this->Ord_u.size());
+}
+
 bool ForwardChecking::Instanciar(int i){   
   if(this->DominioVacio(i))
     return false;

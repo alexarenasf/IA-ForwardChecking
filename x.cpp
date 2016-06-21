@@ -4,6 +4,8 @@ using namespace std;
 void ForwardChecking::IteradorCrear(){
   vector<int> ijk;
   ijk.resize(3);
+  
+  this->Ord_ijk.clear();
     
   for(int k = 1; k <= this->D; k++){
     for(int i = 0; i <= this->H; i++){      
@@ -89,6 +91,7 @@ void ForwardChecking::Instancia_X(){
   int i,j,k;
   
   //Verificar Restricciones
+  // Destino es hotel 1
   int suma_destino_1 = 0;
   for(int i = 0; i <= this->H + this->N; i++){
     suma_destino_1 += this->X[i][1][this->D];
@@ -113,6 +116,20 @@ void ForwardChecking::Instancia_X(){
   
   for(unsigned int r = 0; r < ruta.size(); r++){
     if(ruta[r] != this->Ord_u[this->iterador_u][r])
+      return;
+  }
+  
+  //Tiempo Maximo
+  for(int k = 1; k<=this->D; k++){
+    int t = 0;
+    for(int i = 0; i <= this->H + this->N; i++){
+      for(int j = 0; j <= this->H + this->N; j++){
+        if(this->X[i][j][k]==1){
+          t+=this->t[i][j];
+        }
+      }
+    }
+    if(t > this->T[k])
       return;
   }
   
@@ -173,6 +190,27 @@ bool ForwardChecking::Instanciar(int i, int j, int k){
   }
     
   this->X[i][j][k] = this->DominioPop(i,j,k);
+  
+  // Despues de instanciar un arco conectado (this->X[i][j][k] == 1), recalcular tiempo acumulado
+  if(this->X[i][j][k] == 1){
+    // Si el destino es hotel, el tiempo se reinicia
+    if(j <= this->H){
+      this->A_X[this->iterador_ijk] = 0;
+    // Si es POI, el tiempo se acumula
+    }else{
+      if(this->iterador_ijk>0)
+        this->A_X[this->iterador_ijk] = this->A_X[this->iterador_ijk-1] + this->t[i][j];
+      else
+        this->A_X[this->iterador_ijk] = this->t[i][j];
+    }
+  // Si no se conecta el arco, entonces el tiempo no cambia en relación a la iteración anterior
+  //cout << i << "->" << j << " = " << this->A_X[this->iterador_ijk] << endl;
+  
+  }else{
+    if(this->iterador_ijk>0)
+      this->A_X[this->iterador_ijk] = this->A_X[this->iterador_ijk-1];
+  }
+      
   //cout << "X[" << i << "][" << j << "][" << k << "] = " <<  this->X[i][j][k] << endl;
   
   //if(this->X[i][j][k] == 1)
@@ -222,6 +260,11 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
   }
   
   
+  double distancia_disponible = this->T[k] - this->A_X[this->iterador_ijk];
+  int puedo_llegar_a = 0;
+  int puedo_llegar_a_hotel = 0;
+  //cout << "DD = " << distancia_disponible << endl;
+  
   for(unsigned ijk = this->iterador_ijk + 1; ijk < this->Ord_ijk.size(); ijk++){
     ii = this->Ord_ijk[ijk][0];
     jj = this->Ord_ijk[ijk][1];
@@ -244,6 +287,30 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
           }
         }
       }
+      
+// Al visitar un destino, se deben filtrar todos los destinos inaccesibles por distancia
+// Para todos los origenes futuros ii iguales al destino actual j en el mismo día futuro kk igual al día actual k
+    if(ii == j && kk == k && j != jj){
+      //cout << "DN de " << ii << " a " << jj << " = " << t[ii][jj] << endl;
+      
+      if(distancia_disponible < t[ii][jj]){
+        if(this->DominioEliminar(ii,jj,kk,1)){
+          // La variable futura ijk ahora tiene conflictos con this->iterador_ijk (actual)
+          this->ConflictoAgregar_ijk(ijk,this->iterador_ijk);
+          
+          //Si el dominio de la variable ii > i, jj > j, kk > k queda vacío, copiar el conjunto conflicto de ii,jj,kk en ijk, despues probar con otro valor para ijk
+          if(this->DominioVacio(ii,jj,kk)){
+            this->ConflictoComer_ijk(this->iterador_ijk,ijk);
+            dominioAniquilado = true;
+          }
+        }
+
+      }else{
+        if(jj <= this->H)
+          puedo_llegar_a_hotel++;
+        puedo_llegar_a++;
+      }
+    }
 
 // Cada POI puede ser visitado a lo más una vez
       if(destinoEsPoi){
@@ -316,6 +383,28 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
           //~ }
         //~ }
       //~ }
+    }
+  }
+  
+  //cout << "PLA = " << puedo_llegar_a << endl;
+  if((puedo_llegar_a == 0 || puedo_llegar_a_hotel == 0) && visitar_ijk == 1){
+    for(unsigned ijk = this->iterador_ijk + 1; ijk < this->Ord_ijk.size(); ijk++){
+      ii = this->Ord_ijk[ijk][0];
+      jj = this->Ord_ijk[ijk][1];
+      kk = this->Ord_ijk[ijk][2];
+      
+      if(k == kk){
+        if(this->DominioEliminar(ii,jj,kk,1)){
+          // La variable futura ijk ahora tiene conflictos con this->iterador_ijk (actual)
+          this->ConflictoAgregar_ijk(ijk,this->iterador_ijk);
+          
+          //Si el dominio de la variable ii > i, jj > j, kk > k queda vacío, copiar el conjunto conflicto de ii,jj,kk en ijk, despues probar con otro valor para ijk
+          if(this->DominioVacio(ii,jj,kk)){
+            this->ConflictoComer_ijk(this->iterador_ijk,ijk);
+            dominioAniquilado = true;
+          }
+        }
+      }
     }
   }
   

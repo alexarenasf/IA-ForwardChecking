@@ -23,6 +23,8 @@ class ForwardChecking{
 //Imagnes de Dominios
     vector<vector<vector<int> > > ImDom_u;
     vector<vector<vector<int> > > ImDom_X;
+//Acumuladores de distancia
+    vector<double> A_X;
 //Conjuntos de Conflictos 
     vector<vector<int> > Conf_u;
     vector<vector<int> > Conf_X;
@@ -46,6 +48,7 @@ class ForwardChecking{
     void DominioFiltrar_X();
     void Dominio(int i, int j, int k);
     void Dominio_ijk();
+    void DominioReiniciar_ijk();
     bool DominioVacio(int i, int j, int k);
     bool DominioEliminar(int i, int j, int k, int l);
     int DominioPop(int i, int j, int k);
@@ -83,6 +86,8 @@ class ForwardChecking{
     void ConflictoComer(int i, int ii);
     
 //Operaciones para Variable u[i]
+    void SiguienteRuta();
+    bool NoHayMasRutas();
     void Instancia_u();
     string Ruta_u();
     bool Instanciar(int i);

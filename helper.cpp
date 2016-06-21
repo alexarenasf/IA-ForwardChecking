@@ -48,17 +48,28 @@ void Helper::LeerInstancia(string path,int &H,int &N,int &D,vector<int> &S,vecto
   
   read.close();
   
+  
+  for(int i = 0; i <= H + N; i++){
+    cout << "Origen " << i << ":" << endl;
+    for(int j = 0; j <= H + N; j++){
+      cout << "- Destino " << j << ": " << t[i][j] << endl;
+    }
+  }
 }
 
 void Helper::LeerRutas(vector<vector<int> > &Ord_u, int N){  
   int r;
   ifstream read("./tmp/rutas.tmp");
-  for(int i = 0; i < N; i++){
-    Ord_u.resize(N);
+  
+  Ord_u.clear();
+  
+  while(!read.eof()){    
+    vector<int> ruta;
     for(int j = 0; j < N; j++){
       read >> r;
-      Ord_u[i].push_back(r);
+      ruta.push_back(r);
     }
+    Ord_u.push_back(ruta);
   }
   read.close();
 }
