@@ -26,6 +26,7 @@ class ForwardChecking{
 //Conjuntos de Conflictos 
     vector<vector<int> > Conf_u;
     vector<vector<int> > Conf_X;
+    vector<vector<string> > Conf_X_detalle;
 //Iteradores para Variables X[i][j][k]
     vector<vector<int> > Ord_ijk;
     vector<vector<int> > Ord_u;
@@ -46,7 +47,7 @@ class ForwardChecking{
     void Dominio(int i, int j, int k);
     void Dominio_ijk();
     bool DominioVacio(int i, int j, int k);
-    void DominioEliminar(int i, int j, int k, int l);
+    bool DominioEliminar(int i, int j, int k, int l);
     int DominioPop(int i, int j, int k);
     bool DominioContiene(int i, int j, int k, int l);
     void ImagenDominioCrear_ijk(int ttt, int ijk);

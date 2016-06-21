@@ -88,8 +88,13 @@ bool ForwardChecking::DominioVacio(int i, int j, int k){
   return this->Dom_X[i][j][k].empty();
 }
 
-void ForwardChecking::DominioEliminar(int i, int j, int k, int l){
-  this->Dom_X[i][j][k].erase(remove(this->Dom_X[i][j][k].begin(), this->Dom_X[i][j][k].end(), l), this->Dom_X[i][j][k].end());
+bool ForwardChecking::DominioEliminar(int i, int j, int k, int l){
+  if(this->DominioContiene(i,j,k,l)){
+    this->Dom_X[i][j][k].erase(remove(this->Dom_X[i][j][k].begin(), this->Dom_X[i][j][k].end(), l), this->Dom_X[i][j][k].end());
+    return true;
+  }else{
+    return false;
+  }
 }
 
 bool ForwardChecking::DominioContiene(int i, int j, int k, int l){
