@@ -145,13 +145,14 @@ void Helper::TiempoIniciar(){
   time(&this->tiempo_inicio);
 }
 
-void Helper::TiempoGuardar(string evento){
+void Helper::TiempoGuardar(string evento,string sufijo){
   stringstream path;
   time_t timer;
   time(&timer);
   
   path << "./tmp/";
   path << this->instancia;
+  path << "_" << sufijo;
   path << ".time";
   
   ofstream times;

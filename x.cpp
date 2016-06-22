@@ -87,7 +87,7 @@ void ForwardChecking::IteradorRetroceder(int &i, int &j, int &k){
   this->IteradorSet_ijk(i,j,k);
 }
 
-void ForwardChecking::Instancia_X(Helper helper){
+bool ForwardChecking::Instancia_X(Helper helper){
   int i,j,k;
   
   stringstream solucion;
@@ -100,7 +100,7 @@ void ForwardChecking::Instancia_X(Helper helper){
   }
   
   if(suma_destino_1 == 0)
-    return;
+    return false;
     
   // Origen es hotel 0
   int suma_origen_0 = 0;
@@ -109,7 +109,7 @@ void ForwardChecking::Instancia_X(Helper helper){
   }
   
   if(suma_origen_0 == 0)
-    return;
+    return false;
   
   
   //Verificar Ruta instanciada
@@ -127,7 +127,7 @@ void ForwardChecking::Instancia_X(Helper helper){
   
   for(unsigned int r = 0; r < ruta.size(); r++){
     if(ruta[r] != this->Ord_u[this->iterador_u][r])
-      return;
+      return false;
   }
   
   
@@ -141,7 +141,7 @@ void ForwardChecking::Instancia_X(Helper helper){
     }
     
     if(suma_destino == 0)
-      return;
+      return false;
   }
   
   
@@ -155,7 +155,7 @@ void ForwardChecking::Instancia_X(Helper helper){
     }
     
     if(suma_origen == 0)
-      return;
+      return false;
   }
   
   //Continuidad en la ruta
@@ -168,7 +168,7 @@ void ForwardChecking::Instancia_X(Helper helper){
     
     if(this->X[i][j][k] == 1){
       if(!primero && j_ant != i){
-        return;
+        return false;
       }
       if(!primero){
         //cout << "(" << i_ant << "," << j_ant << ") " << "(" << i << "," << j << ") ";
@@ -201,7 +201,7 @@ void ForwardChecking::Instancia_X(Helper helper){
   }
   
   if(exesotiempo)
-    return;
+    return false;
   
   for(int k = 1; k<=this->D; k++){
     cout << "t[" << k << "] = " << t[k] << " ";
@@ -284,7 +284,7 @@ void ForwardChecking::Instancia_X(Helper helper){
   
   
   
-  return;
+  return true;
 }
 
 

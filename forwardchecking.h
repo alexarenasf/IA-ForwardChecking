@@ -70,7 +70,7 @@ class ForwardChecking{
     void IteradorSet_ijk(int &i, int &j, int &k);
     bool IteradorPrimero();
     bool IteradorUltimo();
-    void Instancia_X(Helper helper);
+    bool Instancia_X(Helper helper);
     bool Instanciar(int i, int j, int k);
     void CheckForward(int &i, int &j, int &k);
     void CBJ(int &i, int &j, int &k);

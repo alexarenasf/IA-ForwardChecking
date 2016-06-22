@@ -25,5 +25,5 @@ class Helper {
     string Filename(const string& str);
     
     void TiempoIniciar();
-    void TiempoGuardar(string evento);
+    void TiempoGuardar(string evento,string sufijo);
 };

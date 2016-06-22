@@ -2,7 +2,7 @@ using namespace std;
 #include "forwardchecking.h"
 
 int main(){
-  string path = "./instances/SET0/6-10-1-2.ophs";
+  string path = "./instances/SET0/32-65-1-2.ophs";
   Helper helper;
 
   int H;
@@ -20,6 +20,8 @@ int main(){
   int i,j,k;
   bool puedoInstanciar;
   
+  helper.TiempoIniciar();
+  
 // Variable u[i]
 if(rehacer_u){
   helper.ReiniciarArchivos();
@@ -28,6 +30,9 @@ if(rehacer_u){
   int primeraVariable = H + 1;
   int ultimaVariable = H + N;
   i = primeraVariable;
+  
+  helper.TiempoGuardar("Iniciando creación de rutas","u");
+  
   while(true){
     puedoInstanciar = forwardchecking.Instanciar(i);
     
@@ -35,12 +40,15 @@ if(rehacer_u){
       //forwardchecking.Instancia_u();
       //cout << forwardchecking.Ruta_u();
       helper.EscribirRuta(forwardchecking.Ruta_u());
+      helper.TiempoGuardar("Ruta creada","u");
     }else if(puedoInstanciar){
 // Revisar dominios de variables futuras y avanzar a la variable i
       i = forwardchecking.CheckForward(i);
+      helper.TiempoGuardar("Checkeando Dominios futuros","u_FC");
     }else{
 //volver a variable i
       i = forwardchecking.CBJ(i);
+      helper.TiempoGuardar("Retorno Inteligente","u_CBJ");
     }
     
     if(i == primeraVariable && forwardchecking.DominioVacio(i))
@@ -48,14 +56,17 @@ if(rehacer_u){
   }
 }
 
+  helper.TiempoGuardar("Creación de rutas terminada","u");
+
   vector<vector<int> > rutas;
   helper.LeerRutas(rutas,N);
   forwardchecking.SetRutas(rutas);
 
+  helper.TiempoGuardar("Iniciando la busqueda de Tours factibles","X");
   
 // Variable X[i][j][k]  
   while(!forwardchecking.NoHayMasRutas()){
-    
+    helper.TiempoGuardar("Usando nueva ruta","X");
     forwardchecking.DominioReiniciar_ijk();
 
     forwardchecking.IteradorCrear(); 
@@ -78,7 +89,9 @@ if(rehacer_u){
       
       if(forwardchecking.IteradorUltimo() && puedoInstanciar){
         //cout << "Solución candidata " << endl;
-        forwardchecking.Instancia_X(helper);
+        if(forwardchecking.Instancia_X(helper)){
+          helper.TiempoGuardar("Tour Solución encontrado","X");
+        }
         //~ for(int d = 1; d <= D; d++)
           //~ forwardchecking.MostrarDia(d);
         //~ cin.get();
@@ -92,6 +105,7 @@ if(rehacer_u){
       }else if(puedoInstanciar){
   // Revisar dominios de variables futuras y avanzar a la variable ijk
         forwardchecking.CheckForward(i,j,k);
+        helper.TiempoGuardar("Checkeando Dominios futuros","X_FC");
         if(checkearDominio){
           cout << "FC" << endl;
           forwardchecking.Dominio_ijk();
@@ -100,6 +114,7 @@ if(rehacer_u){
       }else{
   //volver a variable i
         forwardchecking.CBJ(i,j,k);
+        helper.TiempoGuardar("Retorno Inteligente","X_CBJ");
         if(checkearDominio){
           cout << "CBJ" << endl;
           forwardchecking.Dominio_ijk();
@@ -114,10 +129,10 @@ if(rehacer_u){
       }
       
     }
-    
+    helper.TiempoGuardar("Terminando la ruta","X");
     forwardchecking.SiguienteRuta();
   }
-  
+  helper.TiempoGuardar("Terminada la busqueda","X");
   
   return 0;
 }
