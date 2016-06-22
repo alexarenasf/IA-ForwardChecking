@@ -11,25 +11,6 @@ void ForwardChecking::Dominio(int i){
   cout << "}" << endl;
 }
 
-void ForwardChecking::DominioReiniciar_ijk(){
-  for(int i = 0; i <= this->H + this->N; i++){
-    this->X[i].resize(this->H + this->N + 1);
-    this->Dom_X[i].resize(this->H + this->N + 1);
-    
-    for(int j = 0; j <= this->H + this->N; j++){
-      this->X[i][j].resize(this->D + 1);
-      this->Dom_X[i][j].resize(this->D + 1);
-      
-      for(int k = 1; k <= this->D; k++){
-        this->Dom_X[i][j][k].resize(2);
-        
-        this->Dom_X[i][j][k][0] = 1;
-        this->Dom_X[i][j][k][1] = 0;
-      }
-    }
-  }
-}
-
 void ForwardChecking::ImagenDominioCrear(int t, int i){
   //cout << this->ImDom_u.size() << " - " << this->ImDom_u[t].size() << endl;
   

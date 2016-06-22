@@ -4,6 +4,7 @@ using namespace std;
 #include <vector>
 #include <algorithm>
 #include <sstream>
+#include "helper.h"
 
 class ForwardChecking{
   private:
@@ -34,6 +35,8 @@ class ForwardChecking{
     vector<vector<int> > Ord_u;
     unsigned int iterador_ijk;
     unsigned int iterador_u;
+// Mejor solución
+    int mejor_score;
   public:
     ForwardChecking(int hoteles, int pois, int dias, vector<int> scores, vector<vector<double> > dist, vector<double> maxdist);
     void SetRutas(vector<vector<int> > rutas);
@@ -67,7 +70,7 @@ class ForwardChecking{
     void IteradorSet_ijk(int &i, int &j, int &k);
     bool IteradorPrimero();
     bool IteradorUltimo();
-    void Instancia_X();
+    void Instancia_X(Helper helper);
     bool Instanciar(int i, int j, int k);
     void CheckForward(int &i, int &j, int &k);
     void CBJ(int &i, int &j, int &k);

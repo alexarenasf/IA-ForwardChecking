@@ -37,7 +37,6 @@ string ForwardChecking::Ruta_u(){
 }
 
 void ForwardChecking::SiguienteRuta(){
-  cout << this->iterador_u << endl;
   this->iterador_u++;
 }
 

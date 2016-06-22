@@ -87,8 +87,10 @@ void ForwardChecking::IteradorRetroceder(int &i, int &j, int &k){
   this->IteradorSet_ijk(i,j,k);
 }
 
-void ForwardChecking::Instancia_X(){
+void ForwardChecking::Instancia_X(Helper helper){
   int i,j,k;
+  
+  stringstream solucion;
   
   //Verificar Restricciones
   // Destino es hotel 1
@@ -98,6 +100,15 @@ void ForwardChecking::Instancia_X(){
   }
   
   if(suma_destino_1 == 0)
+    return;
+    
+  // Origen es hotel 0
+  int suma_origen_0 = 0;
+  for(int j = 0; j <= this->H + this->N; j++){
+    suma_origen_0 += this->X[0][j][1];
+  }
+  
+  if(suma_origen_0 == 0)
     return;
   
   
@@ -119,31 +130,161 @@ void ForwardChecking::Instancia_X(){
       return;
   }
   
-  //Tiempo Maximo
+  
+  //Todos los días terminan en un hotel
   for(int k = 1; k<=this->D; k++){
-    int t = 0;
-    for(int i = 0; i <= this->H + this->N; i++){
-      for(int j = 0; j <= this->H + this->N; j++){
-        if(this->X[i][j][k]==1){
-          t+=this->t[i][j];
-        }
+    int suma_destino = 0;
+    for(int h = 0; h <= this->H; h++){
+      for(int i = 0; i <= this->H + this->N; i++){
+        suma_destino += this->X[i][h][k];
       }
     }
-    if(t > this->T[k])
+    
+    if(suma_destino == 0)
       return;
   }
   
-  cout << "0";
+  
+  //Todos los empiezan en un hotel terminan en un hotel
+  for(int k = 1; k<=this->D; k++){
+    int suma_origen = 0;
+    for(int h = 0; h <= this->H; h++){
+      for(int j = 0; j <= this->H + this->N; j++){
+        suma_origen += this->X[h][j][k];
+      }
+    }
+    
+    if(suma_origen == 0)
+      return;
+  }
+  
+  //Continuidad en la ruta
+  bool primero = true;
+  int i_ant, j_ant;
+  for(unsigned int ijk = 0; ijk < this->Ord_ijk.size(); ijk++){
+    i = this->Ord_ijk[ijk][0];
+    j = this->Ord_ijk[ijk][1];
+    k = this->Ord_ijk[ijk][2];
+    
+    if(this->X[i][j][k] == 1){
+      if(!primero && j_ant != i){
+        return;
+      }
+      if(!primero){
+        //cout << "(" << i_ant << "," << j_ant << ") " << "(" << i << "," << j << ") ";
+      } 
+      
+      primero = false;
+      i_ant = this->Ord_ijk[ijk][0];
+      j_ant = this->Ord_ijk[ijk][1];
+    }
+  }
+  
+  
+  //Tiempo Maximo
+  vector<double> t;
+  t.resize(this->D+1);
+  bool exesotiempo = false;
+  double distancia_total = 0;
+  
+  for(int k = 1; k<=this->D; k++){
+    t[k] = 0;
+    for(int i = 0; i <= this->H + this->N; i++){
+      for(int j = 0; j <= this->H + this->N; j++){
+        t[k]+=this->t[i][j]*this->X[i][j][k];
+        distancia_total += this->t[i][j]*this->X[i][j][k];
+      }
+    }
+        
+    if(t[k] > this->T[k])
+      exesotiempo = true;
+  }
+  
+  if(exesotiempo)
+    return;
+  
+  for(int k = 1; k<=this->D; k++){
+    cout << "t[" << k << "] = " << t[k] << " ";
+  }
+  
+  // Calcular el Score
+  int score = 0;
+  for(int k = 1; k<=this->D; k++){
+    for(int i = 0; i <= this->H + this->N; i++){
+      for(int j = 0; j <= this->H + this->N; j++){
+        score += this->S[i]*this->X[i][j][k];
+      }
+    }
+  }
+  
+  cout << " | " << score ;
+  
+  vector<int> k_hotel_inicial;
+  vector<int> k_hotel_final;
+  vector<vector<int> > k_trip;
+  
+  k_hotel_inicial.resize(this->D+1);
+  k_hotel_final.resize(this->D+1);
+  k_trip.resize(this->D+1);
+  
+  //Mostrar la Instancia
+  int k_ant = -1;
   for(unsigned int ijk = 0; ijk < this->Ord_ijk.size(); ijk++){
     i = this->Ord_ijk[ijk][0];
     j = this->Ord_ijk[ijk][1];
     k = this->Ord_ijk[ijk][2];
 
     if(this->X[i][j][k] == 1){
-      cout << "->" << j;
+      //cout << i << "->" << j << "(" << k << ") ";
+      if(k!=k_ant){
+        cout <<  " | " << i << "->" << j;
+        k_hotel_inicial[k] = i;
+        if(j>this->H)
+          k_trip[k].push_back(j);
+      }else{
+        cout << "->" << j;
+        if(j>this->H)
+          k_trip[k].push_back(j);
+        if(j<=this->H)
+          k_hotel_inicial[k] = j;
+      }
+      
+      k_ant = k;
     }
+    
+    
   }
   cout << endl;
+  
+  stringstream pois;
+  solucion.str(string());
+  
+  solucion << distancia_total << " " << score << endl; 
+  
+  for(int k=1; k<=this->D; k++){
+    solucion << this->T[k] << " " << t[k] << " " << k_hotel_inicial[k] << " " << k_hotel_final[k];
+    for(unsigned int t = 0; t < k_trip[k].size(); t++){
+      solucion << " " << k_trip[k][t];
+      pois << k_trip[k][t];
+    }
+    solucion << endl;
+  }
+  solucion << endl;
+  
+  //Guardar solución candidata
+  string solucionstr = solucion.str();
+  helper.EscribirSolucionCandidata(solucion,score,pois.str());
+  solucion.str(solucionstr);
+  
+  //Guardar mejor solución
+  if(score >= this->mejor_score){
+    this->mejor_score = score;
+    helper.EscribirMejorSolucion(solucion);
+  }
+  
+  
+  
+  return;
 }
 
 

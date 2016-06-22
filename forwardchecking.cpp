@@ -9,7 +9,8 @@ ForwardChecking::ForwardChecking(int hoteles, int pois, int dias, vector<int> sc
   this->t = dist;
   this->T = maxdist;
   
-  this->InitVariables(); 
+  this->InitVariables();
+  this->mejor_score = 0; 
 }
 
 void ForwardChecking::SetRutas(vector<vector<int> > rutas){
@@ -50,7 +51,8 @@ void ForwardChecking::InitVariables(){
   for(int i = this->H+1; i <= this->H + this->N; i++){
     this->ImDom_u[i].resize(this->H + this->N + 1);
     
-    for(int n = 1; n <= this->N; n++){
+    for(int n = this->N; n >= 1; n--){
+    //for(int n = 1 ; n <= this->N; n++){
       this->Dom_u[i].push_back(n);
     }
   } 

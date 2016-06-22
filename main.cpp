@@ -1,5 +1,4 @@
 using namespace std;
-#include "helper.h"
 #include "forwardchecking.h"
 
 int main(){
@@ -13,11 +12,8 @@ int main(){
   vector<vector<double> > t;
   vector<double> T;
   
-  bool rehacer_u = false;
-  
-  if(rehacer_u)
-    helper.ReiniciarArchivos();
-  
+  bool rehacer_u = true;
+    
   helper.LeerInstancia(path, H, N, D, S, t, T);    
   ForwardChecking forwardchecking(H, N, D, S, t, T);
   
@@ -26,6 +22,8 @@ int main(){
   
 // Variable u[i]
 if(rehacer_u){
+  helper.ReiniciarArchivos();
+  
   puedoInstanciar = true;   
   int primeraVariable = H + 1;
   int ultimaVariable = H + N;
@@ -57,7 +55,9 @@ if(rehacer_u){
   
 // Variable X[i][j][k]  
   while(!forwardchecking.NoHayMasRutas()){
-    puedoInstanciar = true;     
+    
+    forwardchecking.DominioReiniciar_ijk();
+
     forwardchecking.IteradorCrear(); 
     
     //~ forwardchecking.DominioEliminar(0,0,1,1);
@@ -68,6 +68,7 @@ if(rehacer_u){
     //~ forwardchecking.Dominio_ijk();
         //~ cin.get();
     bool checkearDominio = false;
+    puedoInstanciar = true;     
     string sn;
     
     while(true){        
@@ -77,7 +78,7 @@ if(rehacer_u){
       
       if(forwardchecking.IteradorUltimo() && puedoInstanciar){
         //cout << "Solución candidata " << endl;
-        forwardchecking.Instancia_X();
+        forwardchecking.Instancia_X(helper);
         //~ for(int d = 1; d <= D; d++)
           //~ forwardchecking.MostrarDia(d);
         //~ cin.get();
@@ -113,8 +114,8 @@ if(rehacer_u){
       }
       
     }
+    
     forwardchecking.SiguienteRuta();
-    forwardchecking.DominioReiniciar_ijk();
   }
   
   
