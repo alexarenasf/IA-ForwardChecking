@@ -5,28 +5,39 @@ int main(int argc, char **argv){
   cout << "Algoritmo Forward Checking + Conflict-directed Back Jumping para el OPHS" << endl;
   cout << "Alex Arenas F." << endl << endl;
   
+  if(argc<3){
+    cout << "Faltan parámetros." << endl << endl;
+    cout << "Para ejecutar escribir" << endl;
+    cout << "> make INSTANCE={instancia}" << endl << endl;
+    cout << "Debe existir el archivo ./instances/SET0/{instancia}.ophs" << endl << endl;
+    cout << "Para más información, lea el archivo Readme.md" << endl << endl;
+    return 0;
+  }
+  
   bool rehacer_u = false;
   stringstream p;
   string path = "";
   Helper helper;
-  string instancia;
+  string instancia = "";
   stringstream rutas_path;
   
   p << "./instances/SET0/";
-
+  
   for(int i = 1; i < argc; i++){    
     if(strcmp(argv[i],"-instance")==0){
-      instancia = argv[i+1];
-      p << argv[i+1];
-      p << ".ophs";
-      path = p.str();
+      if(argc>=3){
+        instancia = argv[i+1];
+        p << argv[i+1];
+        p << ".ophs";
+        path = p.str();
+      }
       i++;
     }else if(strcmp(argv[i],"-make-routes")==0){
       rehacer_u = true;
     }
   }
   
-  if(path.empty()){
+  if(instancia.empty()){
     cout << "No se ha especificado una instancia." << endl << endl;
     return 0;
   }
