@@ -11,13 +11,9 @@ void ForwardChecking::Dominio(int i){
   cout << "}" << endl;
 }
 
-void ForwardChecking::ImagenDominioCrear(int t, int i){
-  //cout << this->ImDom_u.size() << " - " << this->ImDom_u[t].size() << endl;
-  
+void ForwardChecking::ImagenDominioCrear(int t, int i){ 
   for(unsigned int n = 0; n < this->Dom_u[i].size(); n++)
     this->ImDom_u[t][i].push_back(this->Dom_u[i][n]);
-  
-  //cout << this->ImDom_u[t][i].size() << endl;
 }
 
 void ForwardChecking::ImagenDominioRestaurar(int t){

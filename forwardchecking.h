@@ -4,6 +4,7 @@ using namespace std;
 #include <vector>
 #include <algorithm>
 #include <sstream>
+#include <cstring>
 #include "helper.h"
 
 class ForwardChecking{

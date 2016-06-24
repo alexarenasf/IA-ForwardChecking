@@ -52,7 +52,6 @@ void ForwardChecking::InitVariables(){
     this->ImDom_u[i].resize(this->H + this->N + 1);
     
     for(int n = this->N; n >= 1; n--){
-    //for(int n = 1 ; n <= this->N; n++){
       this->Dom_u[i].push_back(n);
     }
   } 

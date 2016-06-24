@@ -56,7 +56,6 @@ bool ForwardChecking::Instanciar(int i){
   }
   
   this->u[i] = this->DominioPop(i);
-  //cout << "u[" << i << "]= " <<  this->u[i] << endl;
    
   //Postimagenes para variable instanciada
   this->ImagenDominioCrear(i,i);
@@ -70,7 +69,7 @@ int ForwardChecking::CheckForward(int i){
   
 // Para todo ii > i, respetar secuencia, no repetir valores
   for(int ii = i + 1; ii <= this->H + this->N; ii++){
-    //cout << "FC de " << i << " sobre " << ii << endl;
+
 // Variable i le borra del dominio a la variable ii el valor valorActual
     this->DominioEliminar(ii,valorActual);
 // La variable futura ii ahora tiene conflictos con ii

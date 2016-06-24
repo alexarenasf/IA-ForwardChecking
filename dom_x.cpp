@@ -75,8 +75,6 @@ void ForwardChecking::ImagenDominioCrear_ijk(int ttt, int ijk){
   int j = this->Ord_ijk[ijk][1];
   int k = this->Ord_ijk[ijk][2];
   
-  //cout << "Creando Imagen de " << i << j << k << endl; 
-  
   this->ImDom_X[ttt][ijk].clear();
   for(unsigned int n = 0; n < this->Dom_X[i][j][k].size(); n++)
     this->ImDom_X[ttt][ijk].push_back(this->Dom_X[i][j][k][n]);

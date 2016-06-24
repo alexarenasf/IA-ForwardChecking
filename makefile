@@ -1,7 +1,12 @@
 OBJS = *.cpp
 CC = g++
-LIBS = 
 
 all:
-	$(CC) $(OBJS) -o fc-cbj.app $(LIBS)
-	./fc-cbj.app
+	$(CC) $(OBJS) -o fc-cbj.app
+	./fc-cbj.app -instance $(INSTANCE)
+
+routes:
+	$(CC) $(OBJS) -o fc-cbj.app
+	./fc-cbj.app -instance $(INSTANCE) -make-routes
+
+

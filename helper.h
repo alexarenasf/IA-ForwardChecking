@@ -23,6 +23,7 @@ class Helper {
     
     double DistanciaEuclidiana(pair<double,double> p1, pair<double,double> p2);
     string Filename(const string& str);
+    bool ArchivoExiste(const std::string& name);
     
     void TiempoIniciar();
     void TiempoGuardar(string evento,string sufijo);

@@ -1,9 +1,40 @@
 using namespace std;
 #include "forwardchecking.h"
 
-int main(){
-  string path = "./instances/SET0/32-65-1-2.ophs";
+int main(int argc, char **argv){
+  cout << "Algoritmo Forward Checking + Conflict-directed Back Jumping para el OPHS" << endl;
+  cout << "Alex Arenas F." << endl << endl;
+  
+  bool rehacer_u = false;
+  stringstream p;
+  string path = "";
   Helper helper;
+  string instancia;
+  stringstream rutas_path;
+  
+  p << "./instances/SET0/";
+
+  for(int i = 1; i < argc; i++){    
+    if(strcmp(argv[i],"-instance")==0){
+      instancia = argv[i+1];
+      p << argv[i+1];
+      p << ".ophs";
+      path = p.str();
+      i++;
+    }else if(strcmp(argv[i],"-make-routes")==0){
+      rehacer_u = true;
+    }
+  }
+  
+  if(path.empty()){
+    cout << "No se ha especificado una instancia." << endl << endl;
+    return 0;
+  }
+    
+  if(!helper.ArchivoExiste(path)){
+    cout << "No Existe la instancia " << path << endl << endl;
+    return 0;
+  }
 
   int H;
   int N;
@@ -11,8 +42,6 @@ int main(){
   vector<int> S;
   vector<vector<double> > t;
   vector<double> T;
-  
-  bool rehacer_u = true;
     
   helper.LeerInstancia(path, H, N, D, S, t, T);    
   ForwardChecking forwardchecking(H, N, D, S, t, T);
@@ -20,41 +49,67 @@ int main(){
   int i,j,k;
   bool puedoInstanciar;
   
+  rutas_path << "./tmp/";
+  rutas_path << instancia;
+  rutas_path << ".routes";
+  
   helper.TiempoIniciar();
   
-// Variable u[i]
-if(rehacer_u){
-  helper.ReiniciarArchivos();
-  
-  puedoInstanciar = true;   
-  int primeraVariable = H + 1;
-  int ultimaVariable = H + N;
-  i = primeraVariable;
-  
-  helper.TiempoGuardar("Iniciando creación de rutas","u");
-  
-  while(true){
-    puedoInstanciar = forwardchecking.Instanciar(i);
+  // Protección contra sobreescritura de rutas
+  if(rehacer_u){
+    string respuesta;
     
-    if(i == ultimaVariable && puedoInstanciar){
-      //forwardchecking.Instancia_u();
-      //cout << forwardchecking.Ruta_u();
-      helper.EscribirRuta(forwardchecking.Ruta_u());
-      helper.TiempoGuardar("Ruta creada","u");
-    }else if(puedoInstanciar){
-// Revisar dominios de variables futuras y avanzar a la variable i
-      i = forwardchecking.CheckForward(i);
-      helper.TiempoGuardar("Checkeando Dominios futuros","u_FC");
-    }else{
-//volver a variable i
-      i = forwardchecking.CBJ(i);
-      helper.TiempoGuardar("Retorno Inteligente","u_CBJ");
+    if(helper.ArchivoExiste(rutas_path.str())){
+      do{
+        cout << "Ya existe un archivo de rutas generado, desea sobreescribirlo? [S/n] ";
+        getline(cin, respuesta);
+      }while(respuesta.compare("S")!=0 && respuesta.compare("n")!=0);
+      
+      if(respuesta.compare("n")==0)
+        rehacer_u = false;
     }
     
-    if(i == primeraVariable && forwardchecking.DominioVacio(i))
-      break;
+  }else{
+    // Si no existe el archivo de rutas, hay que hacerlo
+    if(!helper.ArchivoExiste(rutas_path.str())){
+      rehacer_u = true;
+    }
+    
   }
-}
+  
+// Variable u[i]
+  if(rehacer_u){
+    
+    helper.ReiniciarArchivos();
+    
+    puedoInstanciar = true;   
+    int primeraVariable = H + 1;
+    int ultimaVariable = H + N;
+    i = primeraVariable;
+    
+    helper.TiempoGuardar("Iniciando creación de rutas","u");
+    
+    while(true){
+      puedoInstanciar = forwardchecking.Instanciar(i);
+      
+      if(i == ultimaVariable && puedoInstanciar){
+  //Solución
+        helper.EscribirRuta(forwardchecking.Ruta_u());
+        helper.TiempoGuardar("Ruta creada","u");
+      }else if(puedoInstanciar){
+  // Revisar dominios de variables futuras y avanzar a la variable i
+        i = forwardchecking.CheckForward(i);
+        helper.TiempoGuardar("Checkeando Dominios futuros","u_FC");
+      }else{
+  //volver a variable i
+        i = forwardchecking.CBJ(i);
+        helper.TiempoGuardar("Retorno Inteligente","u_CBJ");
+      }
+      
+      if(i == primeraVariable && forwardchecking.DominioVacio(i))
+        break;
+    }
+  }
 
   helper.TiempoGuardar("Creación de rutas terminada","u");
 
@@ -70,14 +125,9 @@ if(rehacer_u){
     forwardchecking.DominioReiniciar_ijk();
 
     forwardchecking.IteradorCrear(); 
-    
-    //~ forwardchecking.DominioEliminar(0,0,1,1);
-    //~ forwardchecking.DominioEliminar(0,1,1,1);
-    //~ forwardchecking.DominioEliminar(0,2,1,1);
+    //Condiciones iniciales
     forwardchecking.DominioFiltrar_X();
-    
-    //~ forwardchecking.Dominio_ijk();
-        //~ cin.get();
+
     bool checkearDominio = false;
     puedoInstanciar = true;     
     string sn;
@@ -88,20 +138,11 @@ if(rehacer_u){
       puedoInstanciar = forwardchecking.Instanciar(i,j,k);
       
       if(forwardchecking.IteradorUltimo() && puedoInstanciar){
-        //cout << "Solución candidata " << endl;
+  // Solución
         if(forwardchecking.Instancia_X(helper)){
           helper.TiempoGuardar("Tour Solución encontrado","X");
         }
-        //~ for(int d = 1; d <= D; d++)
-          //~ forwardchecking.MostrarDia(d);
-        //~ cin.get();
-        
-        //~ getline(cin, sn);
-        //~ if(sn == "s")
-          //~ checkearDominio = true;
-        //~ else
-          //~ checkearDominio = false;
-        
+                
       }else if(puedoInstanciar){
   // Revisar dominios de variables futuras y avanzar a la variable ijk
         forwardchecking.CheckForward(i,j,k);
@@ -123,7 +164,7 @@ if(rehacer_u){
       }
       
       if(forwardchecking.IteradorPrimero() && forwardchecking.DominioVacio(i,j,k)){
-        //forwardchecking.Dominio_ijk();
+  // Fin del recorrido, se retornó a la raiz y no quedan más valores que instanciar
         break;
         
       }

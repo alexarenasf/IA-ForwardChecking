@@ -49,7 +49,7 @@ void Helper::LeerInstancia(string path,int &H,int &N,int &D,vector<int> &S,vecto
   read.close();
   
   this->instancia = this->Filename(path);
-  cout << this->instancia << endl;
+  cout << "Instancia " << this->instancia << ".ophs cargada!" << endl << endl;
   
   
   //~ for(int i = 0; i <= H + N; i++){
@@ -170,5 +170,10 @@ string Helper::Filename (const string& str){
   size_t found = str.find_last_of("/\\");
   size_t found_extension = str.find_last_of(".");
   return str.substr(found+1,found_extension-found-1);
+}
+
+bool Helper::ArchivoExiste(const std::string& name){
+    ifstream f(name.c_str());
+    return f.good();
 }
 

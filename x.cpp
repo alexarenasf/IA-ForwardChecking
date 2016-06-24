@@ -13,16 +13,14 @@ void ForwardChecking::IteradorCrear(){
         ijk[0]=i;
         ijk[1]=this->Ord_u[this->iterador_u][j];
         ijk[2]=k;
-        
-        //cout << "2:" << ijk[0] << ijk[1] << ijk[2] << endl;
+
         this->Ord_ijk.push_back(ijk);
       }
       for(int j = 0; j <= this->H; j++){
         ijk[0]=i;
         ijk[1]=j;
         ijk[2]=k;
-        
-        //cout << "1:" << ijk[0] << ijk[1] << ijk[2] << endl;
+
         this->Ord_ijk.push_back(ijk);
       }
     }
@@ -33,8 +31,7 @@ void ForwardChecking::IteradorCrear(){
         ijk[0]=this->Ord_u[this->iterador_u][i];
         ijk[1]=this->Ord_u[this->iterador_u][j];
         ijk[2]=k;
-        
-        //cout << "4:" << ijk[0] << ijk[1] << ijk[2] << endl;
+
         this->Ord_ijk.push_back(ijk);
       }
       
@@ -42,8 +39,7 @@ void ForwardChecking::IteradorCrear(){
         ijk[0]=this->Ord_u[this->iterador_u][i];
         ijk[1]=j;
         ijk[2]=k;
-        
-        //cout << "3:" << ijk[0] << ijk[1] << ijk[2] << endl;
+
         this->Ord_ijk.push_back(ijk);
       }
     }
@@ -160,7 +156,7 @@ bool ForwardChecking::Instancia_X(Helper helper){
   
   //Continuidad en la ruta
   bool primero = true;
-  int i_ant, j_ant;
+  int j_ant;
   for(unsigned int ijk = 0; ijk < this->Ord_ijk.size(); ijk++){
     i = this->Ord_ijk[ijk][0];
     j = this->Ord_ijk[ijk][1];
@@ -170,12 +166,8 @@ bool ForwardChecking::Instancia_X(Helper helper){
       if(!primero && j_ant != i){
         return false;
       }
-      if(!primero){
-        //cout << "(" << i_ant << "," << j_ant << ") " << "(" << i << "," << j << ") ";
-      } 
       
       primero = false;
-      i_ant = this->Ord_ijk[ijk][0];
       j_ant = this->Ord_ijk[ijk][1];
     }
   }
@@ -235,7 +227,6 @@ bool ForwardChecking::Instancia_X(Helper helper){
     k = this->Ord_ijk[ijk][2];
 
     if(this->X[i][j][k] == 1){
-      //cout << i << "->" << j << "(" << k << ") ";
       if(k!=k_ant){
         cout <<  " | " << i << "->" << j;
         k_hotel_inicial[k] = i;
@@ -246,7 +237,7 @@ bool ForwardChecking::Instancia_X(Helper helper){
         if(j>this->H)
           k_trip[k].push_back(j);
         if(j<=this->H)
-          k_hotel_inicial[k] = j;
+          k_hotel_final[k] = j;
       }
       
       k_ant = k;
@@ -260,12 +251,13 @@ bool ForwardChecking::Instancia_X(Helper helper){
   solucion.str(string());
   
   solucion << distancia_total << " " << score << endl; 
+  pois << "POIS";
   
   for(int k=1; k<=this->D; k++){
     solucion << this->T[k] << " " << t[k] << " " << k_hotel_inicial[k] << " " << k_hotel_final[k];
     for(unsigned int t = 0; t < k_trip[k].size(); t++){
       solucion << " " << k_trip[k][t];
-      pois << k_trip[k][t];
+      pois << "-" << k_trip[k][t];
     }
     solucion << endl;
   }
@@ -320,7 +312,6 @@ void ForwardChecking::MostrarDia(int k){
 }
 
 bool ForwardChecking::Instanciar(int i, int j, int k){   
-  //cout << "(" << k << ")" << i << "->" << j << " [" << this->Dom_X[i][j][k].size() << "]" << endl;  
   if(this->DominioVacio(i,j,k))
     return false;
     
@@ -344,23 +335,12 @@ bool ForwardChecking::Instanciar(int i, int j, int k){
       else
         this->A_X[this->iterador_ijk] = this->t[i][j];
     }
-  // Si no se conecta el arco, entonces el tiempo no cambia en relación a la iteración anterior
-  //cout << i << "->" << j << " = " << this->A_X[this->iterador_ijk] << endl;
-  
+  // Si no se conecta el arco, entonces el tiempo no cambia en relación a la iteración anterior 
   }else{
     if(this->iterador_ijk>0)
       this->A_X[this->iterador_ijk] = this->A_X[this->iterador_ijk-1];
   }
-      
-  //cout << "X[" << i << "][" << j << "][" << k << "] = " <<  this->X[i][j][k] << endl;
-  
-  //if(this->X[i][j][k] == 1)
-    //cout << "(" << k << ")" << i << "->" << j << " = " << this->X[i][j][k] << endl;
-    
-  //if(k == this->D && j == 1 && this->X[i][j][k] == 1){
-    //this->Instancia_X();
-  //}
-  
+
   //Postimagenes para variable instanciada
   this->ImagenDominioCrear_ijk(this->iterador_ijk,this->iterador_ijk);
   
@@ -377,8 +357,6 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
   bool destinoEsHotel = !destinoEsPoi;
   bool dominioAniquilado = false;
 
-  //cout << "X[" << i << j << k << "] = " << visitar_ijk << endl;
-  
   vector <int> posteriores;
   
   if(destinoEsPoi){
@@ -391,8 +369,6 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
       }
     }
 
-    //cout << "Posteriores ";
-
     for(unsigned int u = r; u < this->Ord_u[this->iterador_u].size(); u++){
       posteriores.push_back(this->Ord_u[this->iterador_u][u]);
     }
@@ -404,7 +380,6 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
   double distancia_disponible = this->T[k] - this->A_X[this->iterador_ijk];
   int puedo_llegar_a = 0;
   int puedo_llegar_a_hotel = 0;
-  //cout << "DD = " << distancia_disponible << endl;
   
   for(unsigned ijk = this->iterador_ijk + 1; ijk < this->Ord_ijk.size(); ijk++){
     ii = this->Ord_ijk[ijk][0];
@@ -412,9 +387,6 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
     kk = this->Ord_ijk[ijk][2];
       
    if(visitar_ijk == 1){       
-      //~ if(k == kk)
-      //~ cout << "- [" << ii << "][" << jj << "][" << kk  << "] " << ijk << ":[" << ijk << "]" << endl;
-      
 // Al visitar un destino, el resto de los destinos del mismo origen ya no pueden ser visitados    
       if(ii == i && kk == k){
         if(this->DominioEliminar(ii,jj,kk,1)){
@@ -432,8 +404,6 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
 // Al visitar un destino, se deben filtrar todos los destinos inaccesibles por distancia
 // Para todos los origenes futuros ii iguales al destino actual j en el mismo día futuro kk igual al día actual k
     if(ii == j && kk == k && j != jj){
-      //cout << "DN de " << ii << " a " << jj << " = " << t[ii][jj] << endl;
-      
       if(distancia_disponible < t[ii][jj]){
         if(this->DominioEliminar(ii,jj,kk,1)){
           // La variable futura ijk ahora tiene conflictos con this->iterador_ijk (actual)
@@ -473,7 +443,6 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
   
 // El trip termina en un hotel cualquiera, por lo tanto ya no se pueden visitar más lugares en el día
       if(destinoEsHotel && kk == k){
-        //cout << ii << jj << kk << " ";
         if(this->DominioEliminar(ii,jj,kk,1)){
           // La variable futura ijk ahora tiene conflictos con this->iterador_ijk (actual)
           this->ConflictoAgregar_ijk(ijk,this->iterador_ijk);
@@ -504,30 +473,9 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
         }
       }
 
-// Si no se visita un POI
-    }else{
-      //~ if(destinoEsPoi && i == 2){
-  //~ //No se pueden visitar ningun POI que siga despues de este poi en la ruta
-        //~ for(unsigned int u = 0; u < posteriores.size(); u++){
-          //~ if((jj == posteriores[u] || ii == posteriores[u]) && k == kk){
-            //~ //cout << "Conflicto con " <<  ii << jj << kk << endl;
-            //~ if(this->DominioEliminar(ii,jj,kk,1)){
-              //~ // La variable futura ijk ahora tiene conflictos con this->iterador_ijk (actual)
-              //~ this->ConflictoAgregar_ijk(ijk,this->iterador_ijk);   
-              //~ 
-              //~ //Si el dominio de la variable ii > i, jj > j, kk > k queda vacío, copiar el conjunto conflicto de ii,jj,kk en ijk, despues probar con otro valor para ijk
-              //~ if(this->DominioVacio(ii,jj,kk)){
-                //~ this->ConflictoComer_ijk(this->iterador_ijk,ijk);
-                //~ dominioAniquilado = true;
-              //~ } 
-            //~ }
-          //~ }
-        //~ }
-      //~ }
     }
   }
   
-  //cout << "PLA = " << puedo_llegar_a << endl;
   if((puedo_llegar_a == 0 || puedo_llegar_a_hotel == 0) && visitar_ijk == 1){
     for(unsigned ijk = this->iterador_ijk + 1; ijk < this->Ord_ijk.size(); ijk++){
       ii = this->Ord_ijk[ijk][0];
@@ -549,10 +497,6 @@ void ForwardChecking::CheckForward(int &i, int &j, int &k){
     }
   }
   
-  //this->Dominio_ijk();
-  //cin.get();
-  
-  //cout << endl << endl;
   //Si la instanciación actual produjo una aniquilación
   if(!dominioAniquilado)
     this->IteradorAvanzar(i,j,k);
